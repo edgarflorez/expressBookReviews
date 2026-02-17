@@ -33,41 +33,31 @@ public_users.get("/books", function (req, res) {
 // Get book details based on author
 public_users.get("/author/:author", function (req, res) {
   const { author } = req.params;
-  let bookFound = false;
 
-  Object.keys(books).forEach((book) => {
+  for (const book of Object.keys(books)) {
     const bookAuthor = books[book].author.toLowerCase();
     if (bookAuthor.includes(author.toLowerCase())) {
-      bookFound = true;
       return res.status(200).json(books[book]);
     }
-  });
-
-  if (!bookFound) {
-    return res
-      .status(400)
-      .json({ message: `No book found for author ${author}` });
   }
+
+  return res
+    .status(400)
+    .json({ message: `No book found for author ${author}` });
 });
 
 // Get all books based on title
 public_users.get("/title/:title", function (req, res) {
   const { title } = req.params;
-  let bookFound = false;
 
-  Object.keys(books).forEach((book) => {
+  for (const book of Object.keys(books)) {
     const bookTitle = books[book].title.toLowerCase();
     if (bookTitle.includes(title.toLowerCase())) {
-      bookFound = true;
       return res.status(200).json(books[book]);
     }
-  });
-
-  if (!bookFound) {
-    return res
-      .status(400)
-      .json({ message: `No book found for title ${title}` });
   }
+
+  return res.status(400).json({ message: `No book found for title ${title}` });
 });
 
 //  Get book review
