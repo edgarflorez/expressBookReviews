@@ -1,7 +1,6 @@
 const express = require("express");
 let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
-let doesExist = require("./auth_users.js").doesExist;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
@@ -9,7 +8,7 @@ public_users.post("/register", (req, res) => {
   const { username, password } = req.body;
 
   if (username && password) {
-    if (!doesExist(username)) {
+    if (!isValid(username)) {
       users.push({ name: username, password: password });
       return res
         .status(200)
