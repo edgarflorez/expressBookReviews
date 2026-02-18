@@ -39,12 +39,12 @@ public_users.get("/isbn/:isbn", async function (req, res) {
       if (books[isbn]) {
         resolve(books[isbn]);
       } else {
-        return res.status(404).json({ message: "Book not found" });
+        reject(new Error("Book not found"));
       }
     });
     return res.status(200).json(bookDetail);
   } catch (e) {
-    res.status(500).json({ message: "Error retriving book details" });
+    return res.status(404).json({ message: "Book not found" });
   }
 });
 
@@ -59,24 +59,24 @@ public_users.get("/author/:author", async function (req, res) {
   const { author } = req.params;
 
   try {
-    const bookDetail = await new Promise((resolve, reject) => {
+    const booksByAuthor = await new Promise((resolve, reject) => {
+      let matches = [];
       for (const book of Object.keys(books)) {
         const bookAuthor = books[book].author.toLowerCase();
-        if (bookAuthor.includes(author.toLowerCase())) {
-          resolve(books[book]);
-
-          return;
+        if (bookAuthor === author.toLowerCase()) {
+          matches.push(books[book]);
         }
       }
-
-      return res
-        .status(400)
-        .json({ message: `No book found for author ${author}` });
+      if (matches.length > 0) {
+        resolve(matches);
+      } else {
+        reject(new Error("Book not found"));
+      }
     });
 
-    return res.status(200).json(bookDetail);
+    return res.status(200).json(booksByAuthor);
   } catch (e) {
-    res.status(500).json({ message: "Error retrieving books by author" });
+    return res.status(404).json({ message: "Book not found" });
   }
 });
 
@@ -85,24 +85,24 @@ public_users.get("/title/:title", async function (req, res) {
   const { title } = req.params;
 
   try {
-    const bookDetail = await new Promise((resolve, reject) => {
+    const booksByTitle = await new Promise((resolve, reject) => {
+      let matches = [];
       for (const book of Object.keys(books)) {
         const bookTitle = books[book].title.toLowerCase();
         if (bookTitle.includes(title.toLowerCase())) {
-          resolve(books[book]);
-
-          return;
+          matches.push(books[book]);
         }
       }
-
-      return res
-        .status(400)
-        .json({ message: `No book found for title ${title}` });
+      if (matches.length > 0) {
+        resolve(matches);
+      } else {
+        reject(new Error("Book not found"));
+      }
     });
 
-    return res.status(200).json(bookDetail);
+    return res.status(200).json(booksByTitle);
   } catch (e) {
-    res.status(500).json({ message: "Error retrieving books by title" });
+    return res.status(404).json({ message: "Book not found" });
   }
 });
 

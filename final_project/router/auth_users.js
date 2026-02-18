@@ -49,7 +49,7 @@ regd_users.post("/login", (req, res) => {
       username,
     };
     req.session.save(() => {
-      return res.status(200).send("User successfully logged in");
+      return res.status(200).json({ message: "Login successful!" });
     });
   } else {
     return res.status(208).json({ message: "Invalid credentials" });
